@@ -46,7 +46,6 @@ sub send_questionnaires { 0 }
 
 sub use_category_groups { 1 }
 
-sub map_type { 'GoogleOL' }
 
 sub default_show_name { 0 }
 
