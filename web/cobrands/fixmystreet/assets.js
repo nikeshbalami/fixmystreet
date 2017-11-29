@@ -258,19 +258,35 @@ fixmystreet.add_assets = function(options) {
         }
 
         // An interactive layer for selecting a street light
-        var protocol_options = {
-            version: "1.1.0",
-            url: options.wfs_url,
-            featureType: options.wfs_feature,
-            geometryName: options.geometryName
-        };
-        if (fixmystreet.wmts_config) {
-            protocol_options.srsName = fixmystreet.wmts_config.map_projection;
+        if (options.http_options !== undefined) {
+            var protocol_options = OpenLayers.Util.extend(options.http_options, {
+                format: new OpenLayers.Format.GML({
+                    featureNS: "http://mapserver.gis.umn.edu/mapserver",
+                    geometryName: options.geometryName
+                })
+            });
+            console.log(protocol_options);
+            var protocol = new OpenLayers.Protocol.HTTP(protocol_options);
+            protocol.srsInBBOX = true;
+            console.log(protocol);
+        } else {
+            var protocol_options = {
+                version: "1.1.0",
+                url: options.wfs_url,
+                featureType: options.wfs_feature,
+                geometryName: options.geometryName
+            };
+            if (options.srsName !== undefined) {
+                protocol_options.srsName = options.srsName;
+            }
+            if (fixmystreet.wmts_config && protocol_options.srsName === undefined) {
+                protocol_options.srsName = fixmystreet.wmts_config.map_projection;
+            }
+            if (options.propertyNames) {
+                protocol_options.propertyNames = options.propertyNames;
+            }
+            var protocol = new OpenLayers.Protocol.WFS(protocol_options);
         }
-        if (options.propertyNames) {
-            protocol_options.propertyNames = options.propertyNames;
-        }
-        var protocol = new OpenLayers.Protocol.WFS(protocol_options);
         var layer_options = {
             fixmystreet: options,
             strategies: [new OpenLayers.Strategy.BBOX()],
@@ -280,7 +296,11 @@ fixmystreet.add_assets = function(options) {
             minResolution: options.min_resolution,
             styleMap: get_asset_stylemap()
         };
-        if (fixmystreet.wmts_config) {
+        if (options.srsName !== undefined) {
+            // layer_options.srsName = options.srsName;
+            layer_options.projection = new OpenLayers.Projection(options.srsName);
+        }
+        if (fixmystreet.wmts_config && layer_options.srsName === undefined) {
             layer_options.projection = new OpenLayers.Projection(fixmystreet.wmts_config.map_projection);
         }
         if (options.filter_key) {
