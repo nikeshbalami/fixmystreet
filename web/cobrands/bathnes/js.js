@@ -28,8 +28,8 @@ fixmystreet.maps.banes_map_options = function(typename, category, item) {
         },
         geometryName: 'msGeometry',
         srsName: "EPSG:27700"
-    }
-}
+    };
+};
 
 $(fixmystreet.add_assets(fixmystreet.maps.banes_map_options("Gritbins", "Grit bin empty", "grit bin")));
 $(fixmystreet.add_assets(fixmystreet.maps.banes_map_options("StreetLighting", "Street Light Fault", "street light")));
