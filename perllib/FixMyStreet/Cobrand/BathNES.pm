@@ -44,8 +44,7 @@ sub pin_colour {
 
 sub send_questionnaires { 0 }
 
-sub use_category_groups { 1 }
-
+sub enable_category_groups { 1 }
 
 sub default_show_name { 0 }
 
