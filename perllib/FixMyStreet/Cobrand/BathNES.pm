@@ -48,4 +48,6 @@ sub enable_category_groups { 1 }
 
 sub default_show_name { 0 }
 
+sub default_map_zoom { 3 }
+
 1;
