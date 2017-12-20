@@ -252,6 +252,7 @@ subtest 'check open311 configuring' => sub {
                 endpoint     => 'http://example.com/open311',
                 jurisdiction => 'mySociety',
                 send_comments => 0,
+                fetch_problems => 0,
                 send_method  => 'Open311',
             }
         }
@@ -272,6 +273,7 @@ subtest 'check open311 configuring' => sub {
                 endpoint     => 'http://example.org/open311',
                 jurisdiction => 'open311',
                 send_comments => 0,
+                fetch_problems => 0,
                 send_method  => 'Open311',
             }
         }

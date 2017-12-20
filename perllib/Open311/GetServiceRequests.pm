@@ -19,7 +19,7 @@ sub fetch {
     my $bodies = $self->schema->resultset('Body')->search(
         {
             send_method     => 'Open311',
-            #fetch_problems  => 1,
+            fetch_problems  => 1,
             comment_user_id => { '!=', undef },
             endpoint        => { '!=', '' },
         }
@@ -51,14 +51,6 @@ sub create_problems {
 
         push @args, $self->start_date;
         push @args, $self->end_date;
-    # default to asking for last 2 hours worth if not Bromley
-    } else {
-        #my $end_dt = DateTime->now();
-        #my $start_dt = $end_dt->clone;
-        #$start_dt->add( hours => -2 );
-
-        #push @args, DateTime::Format::W3CDTF->format_datetime( $start_dt );
-        #push @args, DateTime::Format::W3CDTF->format_datetime( $end_dt );
     }
 
     my $requests = $open311->get_service_requests( );
@@ -69,10 +61,9 @@ sub create_problems {
         return 0;
     }
 
-    use Data::Printer;
     for my $request (@{$requests->{request}}) {
         # no point importing if we can't put it on the map
-        next unless $request->{lat} && $request->{long};
+        next unless $request->{service_request_id} && $request->{lat} && $request->{long};
         my $request_id = $request->{service_request_id};
 
         # If there's no request id then we can't work out
@@ -97,9 +88,6 @@ sub create_problems {
         $problems = $self->schema->resultset('Problem')->to_body($body)->search( $criteria );
 
         unless (my $p = $problems->first) {
-        warn $request_id;
-        warn np $request;
-            #next unless defined $request->{update_id} && defined $request->{description};
             my $problem = $self->schema->resultset('Problem')->new(
                 {
                     user => $self->system_user,
@@ -118,6 +106,7 @@ sub create_problems {
                     longitude => $request->{long},
                     areas => ',' . $body->id . ',',
                     bodies_str => $body->id,
+                    send_method_used => 'Open311',
                 }
             );
 
@@ -151,7 +140,6 @@ sub map_state {
         'not councils responsibility' => 'not responsible',
         'no further action'           => 'unable to fix',
         open                          => 'confirmed',
-        closed                        => 'fixed - council'
     );
 
     return $state_map{$incoming_state} || $incoming_state;
