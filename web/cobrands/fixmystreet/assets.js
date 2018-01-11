@@ -359,11 +359,18 @@ fixmystreet.add_assets = function(options) {
             // and any selected marker is preserved
             asset_layer.events.register( 'loadend', asset_layer, layer_loadend);
         }
-        asset_layer.events.register( 'visibilitychanged', asset_layer, layer_visibilitychanged);
-        fixmystreet.map.events.register( 'zoomend', asset_layer, check_zoom_message_visibility);
+        if (options.asset_category) {
+            fixmystreet.map.events.register( 'zoomend', asset_layer, check_zoom_message_visibility);
+        }
+        if (!options.always_visible) {
+            asset_layer.events.register( 'visibilitychanged', asset_layer, layer_visibilitychanged);
+        }
 
 
         fixmystreet.map.addLayer(asset_layer);
+        if (options.always_visible) {
+            asset_layer.setVisibility(true);
+        }
         if (asset_fault_layer) {
             fixmystreet.map.addLayer(asset_fault_layer);
         }
