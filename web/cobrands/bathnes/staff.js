@@ -52,15 +52,11 @@ $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
             TYPENAME: "LLPG"
         }
     },
-    asset_category: "LLPG",
-    asset_item: "property",
-    attributes: {
-        uprn: 'uprn'
-    },
     max_resolution: 0.5971642833948135,
     min_resolution: 0.5971642833948135,
     stylemap: llpg_stylemap,
-    non_interactive: true
+    non_interactive: true,
+    always_visible: true
 })));
 
 })();
