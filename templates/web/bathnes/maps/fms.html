@@ -9,5 +9,12 @@ map_js = [
     version('/cobrands/fixmystreet/assets.js'),
     version('/cobrands/bathnes/js.js'),
 ];
+
+IF c.user.from_body OR c.user.is_superuser;
+    map_js.push(
+        version('/cobrands/bathnes/staff.js'),
+    );
+END;
+
 map_html = INCLUDE maps/openlayers.html include_key = 1
 %]
