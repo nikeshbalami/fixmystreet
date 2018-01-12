@@ -48,7 +48,16 @@ $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
     asset_category: "Street Light Fault",
     asset_item: "street light",
     attributes: {
-        "unitid": "unitid"
+        unitid: "unitid",
+        asset_details: function() {
+            var a = this.attributes;
+            return "street: " + a.street + "\n" +
+                   "owner: " + a.ownername + "\n" +
+                   "unitno: " + a.unitno + "\n" +
+                   "lamp: " + a.lamp + "\n" +
+                   "lampclass: " + a.lampclass + "\n" +
+                   "description: " + a.unitdescription;
+        }
     }
 })));
 

@@ -52,7 +52,7 @@ sub default_map_zoom { 3 }
 
 sub category_extra_hidden {
     my ($self, $meta) = @_;
-    return 1 if $meta eq 'unitid';
+    return 1 if $meta eq 'unitid' || $meta eq 'asset_details';
     return 0;
 }
 
