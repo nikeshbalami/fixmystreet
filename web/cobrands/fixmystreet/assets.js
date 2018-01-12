@@ -274,10 +274,8 @@ fixmystreet.add_assets = function(options) {
                     geometryName: options.geometryName
                 })
             });
-            console.log(protocol_options);
             protocol = new OpenLayers.Protocol.HTTP(protocol_options);
             protocol.srsInBBOX = true;
-            console.log(protocol);
         } else {
             protocol_options = {
                 version: "1.1.0",
