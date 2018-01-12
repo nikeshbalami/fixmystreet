@@ -46,7 +46,10 @@ $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
         }
     },
     asset_category: "Street Light Fault",
-    asset_item: "street light"
+    asset_item: "street light",
+    attributes: {
+        "unitid": "unitid"
+    }
 })));
 
 })();
