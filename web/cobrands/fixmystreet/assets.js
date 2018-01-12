@@ -34,8 +34,13 @@ function asset_selected(e) {
 
     // Set the extra field to the value of the selected feature
     $.each(this.fixmystreet.attributes, function (field_name, attribute_name) {
-        var id = e.feature.attributes[attribute_name];
-        $("#form_" + field_name).val(id);
+        var field_value;
+        if (typeof attribute_name === 'function') {
+            field_value = attribute_name.apply(e.feature);
+        } else {
+            field_value = e.feature.attributes[attribute_name];
+        }
+        $("#form_" + field_name).val(field_value);
     });
 
     // Hide the normal markers layer to keep things simple, but
