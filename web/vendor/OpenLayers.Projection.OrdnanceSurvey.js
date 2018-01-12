@@ -109,7 +109,6 @@ OpenLayers.Projection.OS = {
     goog2osgb: function(point) {
         var p1 = OpenLayers.Layer.SphericalMercator.inverseMercator(point.x, point.y);
         var p2 = OpenLayers.Projection.OS.projectForwardBritish({x: p1.lon, y: p1.lat});
-        console.log("goog2osgb", point, p1, p2);
         point.x = p2.x;
         point.y = p2.y;
         return point;
@@ -118,7 +117,6 @@ OpenLayers.Projection.OS = {
     osgb2goog: function(point) {
         var p1 = OpenLayers.Projection.OS.projectInverseBritish(point);
         var p2 = OpenLayers.Layer.SphericalMercator.forwardMercator(p1.x, p1.y);
-        console.log("osgb2goog", point, p1, p2);
         point.x = p2.lon;
         point.y = p2.lat;
         return point;

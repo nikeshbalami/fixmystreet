@@ -17,7 +17,7 @@ Report type: [% report.get_extra_field_value('FaultType') %]
 
 5 or more lights affected: [% report.get_extra_field_value('5Lights') %]
 
-Unit Number: <Asset layer unit number>
+Unit Number: [% report.get_extra_field_value('unitid') %]
 
 
 Title: [% title %]
@@ -30,7 +30,7 @@ Description: [% detail %]
 
 Location Details
 
-Unit description and location: <Asset layer details>
+Unit description and location: [% report.get_extra_field_value('asset_details') %]
 
 Easting/Northing: [% easting %]/[% northing %]
 

@@ -33,7 +33,7 @@
 </tr>
 <tr>
 <th>Unit Number</th>
-<td><em>&lt;Asset layer unit number&gt;</em></td>
+<td>[% report.get_extra_field_value('unitid') %]</td>
 </tr>
 <tr>
 <th>Title</th>
@@ -56,7 +56,7 @@
 <table>
 <tr>
 <th>Unit description and location</th>
-<td>Asset layer details</td>
+<td>[% report.get_extra_field_value('asset_details') %]</td>
 </tr>
 <tr>
 <th>Easting/Northing</th>
