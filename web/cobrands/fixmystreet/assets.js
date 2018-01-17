@@ -268,12 +268,13 @@ fixmystreet.add_assets = function(options) {
         var protocol_options;
         var protocol;
         if (options.http_options !== undefined) {
-            protocol_options = OpenLayers.Util.extend(options.http_options, {
-                format: new OpenLayers.Format.GML({
+            protocol_options = OpenLayers.Util.extend(options.http_options, {});
+            if (!protocol_options.format) {
+                protocol_options.format = new OpenLayers.Format.GML({
                     featureNS: "http://mapserver.gis.umn.edu/mapserver",
                     geometryName: options.geometryName
-                })
-            });
+                });
+            }
             protocol = new OpenLayers.Protocol.HTTP(protocol_options);
             protocol.srsInBBOX = true;
         } else {
