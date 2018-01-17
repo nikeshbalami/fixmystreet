@@ -14,8 +14,10 @@ fixmystreet.maps.banes_defaults = {
             VERSION: "1.1.0",
             REQUEST: "GetFeature",
             TYPENAME: "",
-            SRSNAME: "urn:ogc:def:crs:EPSG::27700"
-        }
+            SRSNAME: "urn:ogc:def:crs:EPSG::27700",
+            outputFormat: 'application/json'
+        },
+        format: new OpenLayers.Format.GeoJSON({ignoreExtraDims: true})
     },
     asset_category: "",
     asset_item: "asset",
