@@ -364,6 +364,11 @@ fixmystreet.add_assets = function(options) {
             // and any selected marker is preserved
             asset_layer.events.register( 'loadend', asset_layer, layer_loadend);
         }
+
+        // Make sure the user knows something is happening (some asset layers can be sllooowwww)
+        asset_layer.events.register( 'loadstart', asset_layer, fixmystreet.maps.loading_spinner.show);
+        asset_layer.events.register( 'loadend', asset_layer, fixmystreet.maps.loading_spinner.hide);
+
         if (options.asset_category) {
             fixmystreet.map.events.register( 'zoomend', asset_layer, check_zoom_message_visibility);
         }
