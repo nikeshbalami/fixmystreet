@@ -295,10 +295,10 @@ fixmystreet.add_assets = function(options) {
             }
             protocol = new OpenLayers.Protocol.WFS(protocol_options);
         }
-        var strategy_class = options.strategy_class || OpenLayers.Strategy.BBOX;
+        var StrategyClass = options.strategy_class || OpenLayers.Strategy.BBOX;
         var layer_options = {
             fixmystreet: options,
-            strategies: [new strategy_class()],
+            strategies: [new StrategyClass()],
             protocol: protocol,
             visibility: false,
             maxResolution: options.max_resolution,
