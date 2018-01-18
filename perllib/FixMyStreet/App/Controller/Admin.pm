@@ -907,7 +907,7 @@ sub report_edit : Path('report_edit') : Args(1) {
         if ( $problem->state ne $old_state ) {
             $c->forward( 'log_edit', [ $id, 'problem', 'state_change' ] );
 
-            my $name = _('an adminstrator');
+            my $name = _('an administrator');
             my $extra = { is_superuser => 1 };
             if ($c->user->from_body) {
                 $name = $c->user->from_body->name;
@@ -961,17 +961,14 @@ sub report_edit_category : Private {
             $problem->whensent(undef);
         }
         # If the send methods of the old/new contacts differ we need to resend the report
-        my @old_contacts = grep { $_->category eq $category_old } @{$c->stash->{contacts}};
         my @new_send_methods = uniq map {
             ( $_->body->can_be_devolved && $_->send_method ) ?
-            $_->send_method : $_->body->send_method;
+            $_->send_method : $_->body->send_method
+                ? $_->body->send_method
+                : $c->cobrand->_fallback_body_sender()->{method};
         } @contacts;
-        my @old_send_methods = map {
-            ( $_->body->can_be_devolved && $_->send_method ) ?
-            $_->send_method : $_->body->send_method;
-        } @old_contacts;
-        if ( scalar @{ mySociety::ArrayUtils::symmetric_diff(\@old_send_methods, \@new_send_methods) } ) {
-            $c->log->debug("Report changed, resending");
+        my %old_send_methods = map { $_ => 1 } split /,/, ($problem->send_method_used || "Email");
+        if (grep !$old_send_methods{$_}, @new_send_methods) {
             $problem->whensent(undef);
         }
 
@@ -1942,11 +1939,9 @@ sub check_page_allowed : Private {
 sub fetch_all_bodies : Private {
     my ($self, $c ) = @_;
 
-    my @bodies = $c->model('DB::Body')->all_translated;
+    my @bodies = $c->model('DB::Body')->translated->all_sorted;
     if ( $c->cobrand->moniker eq 'zurich' ) {
         @bodies = $c->cobrand->admin_fetch_all_bodies( @bodies );
-    } else {
-        @bodies = sort { strcoll($a->name, $b->name) } @bodies;
     }
     $c->stash->{bodies} = \@bodies;
 
@@ -1956,20 +1951,15 @@ sub fetch_all_bodies : Private {
 sub fetch_body_areas : Private {
     my ($self, $c, $body ) = @_;
 
-    my $body_area = $body->body_areas->first;
-
-    unless ( $body_area ) {
+    my $children = $body->first_area_children;
+    unless ($children) {
         # Body doesn't have any areas defined.
         delete $c->stash->{areas};
         delete $c->stash->{fetched_areas_body_id};
         return;
     }
 
-    my $areas = mySociety::MaPit::call('area/children', [ $body_area->area_id ],
-        type => $c->cobrand->area_types_children,
-    );
-
-    $c->stash->{areas} = [ sort { strcoll($a->{name}, $b->{name}) } values %$areas ];
+    $c->stash->{areas} = [ sort { strcoll($a->{name}, $b->{name}) } values %$children ];
     # Keep track of the areas we've fetched to prevent a duplicate fetch later on
     $c->stash->{fetched_areas_body_id} = $body->id;
 }

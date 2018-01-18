@@ -160,10 +160,11 @@ sub areas {
 sub first_area_children {
     my ( $self ) = @_;
 
-    my $area_id = $self->body_areas->first->area_id;
+    my $body_area = $self->body_areas->first;
+    return unless $body_area;
 
     my $cobrand = $self->result_source->schema->cobrand;
-    my $children = mySociety::MaPit::call('area/children', $area_id,
+    my $children = mySociety::MaPit::call('area/children', $body_area->area_id,
         type => $cobrand->area_types_children,
     );
 
@@ -183,6 +184,35 @@ e.g.
 sub get_cobrand_handler {
     my $self = shift;
     return FixMyStreet::Cobrand->body_handler($self->areas);
+}
+
+sub calculate_average {
+    my ($self) = @_;
+
+    my $substmt = "select min(id) from comment where me.problem_id=comment.problem_id and (problem_state in ('fixed', 'fixed - council', 'fixed - user') or mark_fixed)";
+    my $subquery = FixMyStreet::DB->resultset('Comment')->to_body($self)->search({
+        -or => [
+            problem_state => [ FixMyStreet::DB::Result::Problem->fixed_states() ],
+            mark_fixed => 1,
+        ],
+        'me.id' => \"= ($substmt)",
+        'me.state' => 'confirmed',
+    }, {
+        select   => [
+            { extract => "epoch from me.confirmed-problem.confirmed", -as => 'time' },
+        ],
+        as => [ qw/time/ ],
+        rows => 100,
+        order_by => { -desc => 'me.confirmed' },
+        join => 'problem'
+    })->as_subselect_rs;
+
+    my $avg = $subquery->search({
+    }, {
+        select => [ { avg => "time" } ],
+        as => [ qw/avg/ ],
+    })->first->get_column('avg');
+    return $avg;
 }
 
 1;

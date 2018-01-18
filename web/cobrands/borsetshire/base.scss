@@ -63,3 +63,55 @@
         text-decoration: underline;
     }
 }
+
+body.authpage {
+    .content {
+        max-width: 27em;
+        margin-#{$left}: auto;
+        margin-#{$right}: auto;
+    }
+}
+
+#demo-user-list {
+    @include list-reset-soft();
+    border-bottom: 1px solid #eee;
+    margin-bottom: 2em;
+
+    li {
+        margin: 2em 0;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    span {
+        color: #666;
+        font-size: (14em / 16);
+        display: block;
+        margin-top: 0.5em;
+    }
+}
+
+.fms-pro-promo {
+  margin: 2em -1em;
+  padding: 1em;
+  background: $primary;
+  color: $primary_text;
+
+  .lead {
+    font-weight: bold;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.btn--borsetshire {
+  @include button-reset($text: #000, $hover-text: #000);
+}
