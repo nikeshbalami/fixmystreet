@@ -568,8 +568,8 @@ $.extend(fixmystreet.utils, {
                 fixmystreet.map.removePopup(fixmystreet.map.popups[0]);
             }
         });
-        fixmystreet.markers.events.register( 'loadstart', fixmystreet.markers, fixmystreet.maps.loading_spinner.show);
-        fixmystreet.markers.events.register( 'loadend', fixmystreet.markers, fixmystreet.maps.loading_spinner.hide);
+        fixmystreet.markers.events.register( 'loadstart', null, fixmystreet.maps.loading_spinner.show);
+        fixmystreet.markers.events.register( 'loadend', null, fixmystreet.maps.loading_spinner.hide);
 
         var markers = fixmystreet.maps.markers_list( fixmystreet.pins, true );
         fixmystreet.markers.addFeatures( markers );
