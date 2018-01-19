@@ -48,7 +48,8 @@ function banes_owns_feature(f) {
     return f &&
            f.attributes &&
            f.attributes.ownername &&
-           f.attributes.ownername.startsWith("B&NES");
+           f.attributes.ownername.match &&
+           f.attributes.ownername.match(/B&NES/);
 }
 
 function banes_does_not_own_feature(feature) {
