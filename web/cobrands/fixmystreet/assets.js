@@ -215,7 +215,7 @@ function get_asset_stylemap() {
             popupYOffset: -40,
             graphicOpacity: 1.0
         }),
-        'temporary': new OpenLayers.Style({
+        'hover': new OpenLayers.Style({
             fillColor: "#55BB00",
             fillOpacity: 0.8,
             strokeColor: "#000000",
@@ -346,13 +346,21 @@ fixmystreet.add_assets = function(options) {
             select_feature_control = new OpenLayers.Control.SelectFeature( asset_layer );
             asset_layer.events.register( 'featureselected', asset_layer, asset_selected);
             asset_layer.events.register( 'featureunselected', asset_layer, asset_unselected);
+            // When panning/zooming the map check that this layer is still correctly shown
+            // and any selected marker is preserved
+            asset_layer.events.register( 'loadend', asset_layer, layer_loadend);
+        }
+
+        // Even if an asset layer is marked as non-interactive it can still have
+        // a hover style which we'll need to set up.
+        if (!options.non_interactive || (options.stylemap && options.stylemap.styles.hover)) {
             // Set up handlers for simply hovering over a street light marker
             hover_feature_control = new OpenLayers.Control.SelectFeature(
                 asset_layer,
                 {
                     hover: true,
                     highlightOnly: true,
-                    renderIntent: 'temporary'
+                    renderIntent: 'hover'
                 }
             );
             hover_feature_control.events.register('beforefeaturehighlighted', null, function(e) {
@@ -362,10 +370,8 @@ fixmystreet.add_assets = function(options) {
                     return false;
                 }
             });
-            // When panning/zooming the map check that this layer is still correctly shown
-            // and any selected marker is preserved
-            asset_layer.events.register( 'loadend', asset_layer, layer_loadend);
         }
+
 
         // Make sure the user knows something is happening (some asset layers can be sllooowwww)
         asset_layer.events.register( 'loadstart', null, fixmystreet.maps.loading_spinner.show);
