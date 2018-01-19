@@ -43,6 +43,77 @@ $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
     asset_item: "grit bin"
 })));
 
+
+function banes_owns_feature(f) {
+    return f &&
+           f.attributes &&
+           f.attributes.ownername &&
+           f.attributes.ownername.startsWith("B&NES");
+}
+
+function banes_does_not_own_feature(feature) {
+    return !banes_owns_feature(feature);
+}
+
+var lighting_default_style = new OpenLayers.Style({
+    fillColor: "#868686",
+    fillOpacity: 0.6,
+    strokeColor: "#000000",
+    strokeOpacity: 0.6,
+    strokeWidth: 2,
+    pointRadius: 4,
+    title: 'Not owned by B&NES. Owned by ${ownername}.'
+});
+
+var rule_owned = new OpenLayers.Rule({
+    filter: new OpenLayers.Filter.FeatureId({
+        type: OpenLayers.Filter.Function,
+        evaluate: banes_owns_feature
+    }),
+    symbolizer: {
+        fillColor: "#FFFF00",
+        pointRadius: 6,
+        title: '${unitdescription} ${unitno}',
+    }
+});
+
+var rule_not_owned = new OpenLayers.Rule({
+    filter: new OpenLayers.Filter.FeatureId({
+        type: OpenLayers.Filter.Function,
+        evaluate: banes_does_not_own_feature
+    })
+});
+lighting_default_style.addRules([rule_owned, rule_not_owned]);
+
+// XXX fixmystreet.pin_prefix isn't always available here (e.g. on /report/new),
+// so get it from the DOM directly
+var pin_prefix = fixmystreet.pin_prefix || document.getElementById('js-map-data').getAttribute('data-pin_prefix');
+
+var lighting_stylemap = new OpenLayers.StyleMap({
+    'default': lighting_default_style,
+    'select': new OpenLayers.Style({
+        externalGraphic: pin_prefix + "pin-spot.png",
+        fillColor: "#55BB00",
+        graphicWidth: 48,
+        graphicHeight: 64,
+        graphicXOffset: -24,
+        graphicYOffset: -56,
+        backgroundGraphic: pin_prefix + "pin-shadow.png",
+        backgroundWidth: 60,
+        backgroundHeight: 30,
+        backgroundXOffset: -7,
+        backgroundYOffset: -22,
+        popupYOffset: -40,
+        graphicOpacity: 1.0
+    }),
+    'hover': new OpenLayers.Style({
+        pointRadius: 8,
+        cursor: 'pointer'
+    })
+
+});
+
+
 $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
     http_options: {
         params: {
@@ -51,6 +122,7 @@ $(fixmystreet.add_assets($.extend(true, {}, fixmystreet.maps.banes_defaults, {
     },
     asset_category: "Street Light Fault",
     asset_item: "street light",
+    stylemap: lighting_stylemap,
     attributes: {
         unitid: "unitid",
         asset_details: function() {
