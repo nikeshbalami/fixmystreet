@@ -269,7 +269,9 @@ fixmystreet.add_assets = function(options) {
         var protocol;
         if (options.http_options !== undefined) {
             protocol_options = OpenLayers.Util.extend(options.http_options, {});
-            if (!protocol_options.format) {
+            if (protocol_options.format_class) {
+                protocol_options.format = new protocol_options.format_class(protocol_options.format_options);
+            } else {
                 protocol_options.format = new OpenLayers.Format.GML({
                     featureNS: "http://mapserver.gis.umn.edu/mapserver",
                     geometryName: options.geometryName

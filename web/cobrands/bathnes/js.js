@@ -17,7 +17,8 @@ fixmystreet.maps.banes_defaults = {
             SRSNAME: "urn:ogc:def:crs:EPSG::27700",
             outputFormat: 'application/json'
         },
-        format: new OpenLayers.Format.GeoJSON({ignoreExtraDims: true})
+        format_class: OpenLayers.Format.GeoJSON,
+        format_options: {ignoreExtraDims: true}
     },
     strategy_class: OpenLayers.Strategy.FixMyStreet,
     asset_category: "",
