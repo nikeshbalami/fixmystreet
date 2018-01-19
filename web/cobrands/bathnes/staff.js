@@ -31,7 +31,7 @@ var highways_stylemap = new OpenLayers.StyleMap({
         title: '${description}\n${notes}'
     }),
     // Defining a 'hover' style means this layer will have hover
-    // behaviour even if sent as non_interactive.
+    // behaviour even if set as non_interactive.
     'hover': new OpenLayers.Style({
         strokeOpacity: 1,
         strokeWidth: 3
